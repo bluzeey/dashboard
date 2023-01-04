@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import Sidebar from "./Sidebar";
 
-function Teamstable() {
+function Teamstable({showSidebar,setShowSidebar}) {
   const [teams, setTeams] = useState([]);
+
+  
+  const [show,setShow]=useState(false);
+  const handleClose=()=>setShow(false)
+  const handleShow=()=>setShow(true)
+
+
 
   useEffect(() => {
     const getData = async () => {
@@ -26,22 +34,23 @@ function Teamstable() {
   ];
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
-      console.log(rowIndex, 'is selected!')
+      console.log(rowIndex,row, 'is selected!')
+     
     }
   };
 
   if(teams){
     return (
-        <BootstrapTable
-          keyField="name"
-          data={teams}
-          columns={columns}
-          pagination={paginationFactory({
-            paginationSize:5,
-            sizePerPageList:[6,10]
-          })}
-          rowEvents={rowEvents}
-        />
+          <BootstrapTable
+            keyField="name"
+            data={teams}
+            columns={columns}
+            pagination={paginationFactory({
+              paginationSize:5,
+              sizePerPageList:[6,10]
+            })}
+            rowEvents={rowEvents}
+          />
     );
   }
 }
