@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+custom-row-classes{
+  background-color:#052c65 ;
+  color: white;
+}

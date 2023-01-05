@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import Offcanvas from "react-bootstrap/Offcanvas";
-import moment from "moment";
+import Sidebar from "./Sidebar";
+import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
+import "../index.css";
 
 function Teamstable() {
   const [teams, setTeams] = useState([]);
@@ -13,7 +14,6 @@ function Teamstable() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  let randomGame = 1 + Math.floor(Math.random() * 25);
 
   useEffect(() => {
     const getData = async () => {
@@ -26,14 +26,29 @@ function Teamstable() {
     getData();
   }, []);
 
+  const headerStyle = {
+    backgroundColor: "#052c65",
+    color: "white",
+  };
+
   const columns = [
-    { dataField: "id", text: "Id" },
-    { dataField: "full_name", text: "Team Name" },
-    { dataField: "city", text: "City" },
-    { dataField: "abbreviation", text: "Abbreviation" },
-    { dataField: "conference", text: "Conference" },
-    { dataField: "division", text: "Division" },
+    { dataField: "id", text: "Id", headerStyle: headerStyle },
+    { dataField: "full_name", text: "Team Name", headerStyle: headerStyle },
+    { dataField: "city", text: "City", sort: true, headerStyle: headerStyle },
+    {
+      dataField: "abbreviation",
+      text: "Abbreviation",
+      headerStyle: headerStyle,
+    },
+    { dataField: "conference", text: "Conference", headerStyle: headerStyle },
+    { dataField: "division", text: "Division", headerStyle: headerStyle },
   ];
+
+  const options = {
+    paginationSize: 5,
+    sizePerPageList: [6, 10],
+  };
+
   const rowEvents = {
     onClick: async (e, row, rowIndex) => {
       setSelectedRow(row);
@@ -45,65 +60,68 @@ function Teamstable() {
         .then((response) => response.json())
         .then((data) => {
           setGames(data.data);
-          console.log(games);
           setTotal(data.meta.total_count);
         });
       handleShow();
     },
   };
+  const MySearch = (props) => {
+    let input;
+    const handleClick = () => {
+      props.onSearch(input.value);
+    };
+    return (
+      <div className="my-2 w-50">
+        <input
+          className="form-control"
+          style={{ border: "2px solid #052c65" }}
+          ref={(n) => (input = n)}
+          type="text"
+          onChange={handleClick}
+        />
+      </div>
+    );
+  };
+
   return (
-    <>
-      <BootstrapTable
-        keyField="name"
-        data={teams}
-        columns={columns}
-        pagination={paginationFactory({
-          paginationSize: 5,
-          sizePerPageList: [6, 10],
-        })}
-        rowEvents={rowEvents}
-      />
-      <Offcanvas placement="end" show={show} onHide={handleClose}>
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>{selectedRow.full_name}</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <div className="d-flex justify-content-between">
-            <p>Team full name:</p>
-            <p>{selectedRow?.full_name} </p>
-          </div>
-          <div className="d-flex justify-content-between">
-            <p>Total Games in 2021 :</p>
-            <p>{total}</p>
-          </div>
-          <p className="fw-bold">Random Game Details: </p>
-          <div className="fw-bold">
-            <div className="px-2">
-              <div className="d-flex justify-content-between">
-                <p>Date</p>
-                <p>{moment.utc(games[randomGame]?.date).format("MM/DD/YY")}</p>
-              </div>
-              <div className="d-flex justify-content-between">
-                <p>Home Team</p>
-                <p>{games[randomGame]?.home_team.full_name}</p>
-              </div>
-              <div className="d-flex justify-content-between">
-                <p>Home Team Score</p>
-                <p>{games[randomGame]?.home_team_score}</p>
-              </div>
-              <div className="d-flex justify-content-between">
-                <p>Visitor Team</p>
-                <p>{games[randomGame]?.visitor_team.full_name}</p>
-              </div>
-              <div className="d-flex justify-content-between">
-                <p>Visitor Team Score</p>
-                <p>{games[randomGame]?.visitor_team_score}</p>
-              </div>
-            </div>
-          </div>
-        </Offcanvas.Body>
-      </Offcanvas>
-    </>
+    <ToolkitProvider
+      keyField="name"
+      data={teams}
+      columns={columns}
+      search={{
+        searchFormatted: true,
+      }}
+    >
+      {(props) => (
+        <div className="h-100">
+          <h2
+            style={{ color: "#052c65", marginBottom: "5px" }}
+            className="my-2"
+          >
+            NBA Teams
+          </h2>
+          <MySearch {...props.searchProps} />
+          <BootstrapTable
+            {...props.baseProps}
+            pagination={paginationFactory(options)}
+            rowEvents={rowEvents}
+            bootstrap4
+            rowStyle={{
+              backgroundColor: "rgb(241,245,249)",
+              marginBottom: "2px",
+              fontWeight: "bold",
+            }}
+          />
+          <Sidebar
+            selectedRow={selectedRow}
+            show={show}
+            handleClose={handleClose}
+            total={total}
+            games={games}
+          />
+        </div>
+      )}
+    </ToolkitProvider>
   );
 }
 
