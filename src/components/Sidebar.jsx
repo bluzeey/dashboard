@@ -7,7 +7,7 @@ function Sidebar({selectedRow,show,handleClose,total,games}) {
   return (
     <Offcanvas placement="end" show={show} onHide={handleClose}>
     <Offcanvas.Header closeButton style={{backgroundColor:'rgb(241,245,249)'}}>
-      <Offcanvas.Title >{selectedRow.full_name}</Offcanvas.Title>
+      <Offcanvas.Title >{selectedRow?.full_name}</Offcanvas.Title>
     </Offcanvas.Header>
     <Offcanvas.Body>
       <div className="d-flex justify-content-between">
@@ -23,23 +23,23 @@ function Sidebar({selectedRow,show,handleClose,total,games}) {
         <div className="px-2">
           <div className="d-flex justify-content-between">
             <p>Date</p>
-            <p>{moment.utc(games[randomGame]?.date).format("MM/DD/YY")}</p>
+            <p>{moment.utc(games?.[randomGame]?.date).format("MM/DD/YY")}</p>
           </div>
           <div className="d-flex justify-content-between">
             <p>Home Team</p>
-            <p>{games[randomGame]?.home_team.full_name}</p>
+            <p>{games?.[randomGame]?.home_team.full_name}</p>
           </div>
           <div className="d-flex justify-content-between">
             <p>Home Team Score</p>
-            <p>{games[randomGame]?.home_team_score}</p>
+            <p>{games?.[randomGame]?.home_team_score}</p>
           </div>
           <div className="d-flex justify-content-between">
             <p>Visitor Team</p>
-            <p>{games[randomGame]?.visitor_team.full_name}</p>
+            <p>{games?.[randomGame]?.visitor_team.full_name}</p>
           </div>
           <div className="d-flex justify-content-between">
             <p>Visitor Team Score</p>
-            <p>{games[randomGame]?.visitor_team_score}</p>
+            <p>{games?.[randomGame]?.visitor_team_score}</p>
           </div>
         </div>
       </div>

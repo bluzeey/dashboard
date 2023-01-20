@@ -9,6 +9,7 @@ function Teamstable() {
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
   const [total, setTotal] = useState(0);
+  const [error, setError] = useState(false);
   const [selectedRow, setSelectedRow] = useState(0);
 
   const [show, setShow] = useState(false);
@@ -21,13 +22,16 @@ function Teamstable() {
         .then((response) => response.json())
         .then((data) => {
           setTeams(data.data);
+        })
+        .catch((err) => {
+          setError(true);
         });
     };
     getData();
   }, []);
 
   const headerStyle = {
-    backgroundColor: "#052c65",
+    backgroundColor: "#074684",
     color: "white",
   };
 
@@ -44,9 +48,55 @@ function Teamstable() {
     { dataField: "division", text: "Division", headerStyle: headerStyle },
   ];
 
+  const pageButtonRenderer = ({
+    page,
+    active,
+    onPageChange,
+  }) => {
+    const handleClick = (e) => {
+      e.preventDefault();
+      onPageChange(page);
+    };
+    const activeStyle = {};
+    if (active) {
+      activeStyle.backgroundColor = "#074684";
+      activeStyle.color = "white";
+    } else {
+      activeStyle.backgroundColor = "#F8FBFD";
+      activeStyle.color = "black";
+    }
+    if (typeof page === "string") {
+      activeStyle.backgroundColor = "white";
+      activeStyle.color = "black";
+    }
+    return (
+      <li className="page-item">
+        <a
+          className="page-link"
+          href="#"
+          onClick={handleClick}
+          style={activeStyle}
+        >
+          {page}
+        </a>
+      </li>
+    );
+  };
+
   const options = {
     paginationSize: 5,
     sizePerPageList: [6, 10],
+    pageButtonRenderer,
+  };
+
+  const selectRow = {
+    mode: "radio",
+    clickToSelect: true,
+    hideSelectColumn: true,
+    style: {
+      backgroundColor: "#074684",
+      color: "white",
+    },
   };
 
   const rowEvents = {
@@ -61,10 +111,13 @@ function Teamstable() {
         .then((data) => {
           setGames(data.data);
           setTotal(data.meta.total_count);
-        });
+        }).catch((err)=>
+          setError(true)
+        );
       handleShow();
     },
   };
+
   const MySearch = (props) => {
     let input;
     const handleClick = () => {
@@ -74,7 +127,7 @@ function Teamstable() {
       <div className="my-2 w-50">
         <input
           className="form-control"
-          style={{ border: "2px solid #052c65" }}
+          style={{ border: "2px solid #074684" }}
           ref={(n) => (input = n)}
           type="text"
           onChange={handleClick}
@@ -82,6 +135,10 @@ function Teamstable() {
       </div>
     );
   };
+
+  if(error){
+    return <p>We cannot load the data at the moment.</p>
+  }
 
   return (
     <ToolkitProvider
@@ -95,7 +152,7 @@ function Teamstable() {
       {(props) => (
         <div className="h-100">
           <h2
-            style={{ color: "#052c65", marginBottom: "5px" }}
+            style={{ color: "#074684", marginBottom: "5px" }}
             className="my-2"
           >
             NBA Teams
@@ -107,10 +164,11 @@ function Teamstable() {
             rowEvents={rowEvents}
             bootstrap4
             rowStyle={{
-              backgroundColor: "rgb(241,245,249)",
+              backgroundColor: "#F8FBFD",
               marginBottom: "2px",
-              fontWeight: "bold",
+              fontWeight: "700",
             }}
+            selectRow={selectRow}
           />
           <Sidebar
             selectedRow={selectedRow}
