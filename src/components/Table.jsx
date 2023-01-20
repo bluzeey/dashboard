@@ -104,7 +104,7 @@ function Teamstable() {
     onClick: async (e, row, rowIndex) => {
       setSelectedRow(row);
       await fetch(
-        `https://www.balldontlie.io/api/v1/gamses?seasons[]=2021&team_ids[]=${
+        `https://www.balldontlie.io/api/v1/games?seasons[]=2021&team_ids[]=${
           rowIndex + 1
         }`
       )
