@@ -10,6 +10,7 @@ function Teamstable() {
   const [games, setGames] = useState([]);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState(false);
+  const [gamesError,setGamesError]=useState(false)
   const [selectedRow, setSelectedRow] = useState(0);
 
   const [show, setShow] = useState(false);
@@ -103,7 +104,7 @@ function Teamstable() {
     onClick: async (e, row, rowIndex) => {
       setSelectedRow(row);
       await fetch(
-        `https://www.balldontlie.io/api/v1/games?seasons[]=2021&team_ids[]=${
+        `https://www.balldontlie.io/api/v1/gamses?seasons[]=2021&team_ids[]=${
           rowIndex + 1
         }`
       )
@@ -112,7 +113,7 @@ function Teamstable() {
           setGames(data.data);
           setTotal(data.meta.total_count);
         }).catch((err)=>
-          setError(true)
+          setGamesError(true)
         );
       handleShow();
     },
@@ -176,6 +177,7 @@ function Teamstable() {
             handleClose={handleClose}
             total={total}
             games={games}
+            gamesError={gamesError}
           />
         </div>
       )}

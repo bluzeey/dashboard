@@ -2,8 +2,18 @@ import React from 'react'
 import Offcanvas from "react-bootstrap/Offcanvas";
 import moment from "moment";
 
-function Sidebar({selectedRow,show,handleClose,total,games}) {
+function Sidebar({selectedRow,show,handleClose,total,games,gamesError}) {
   let randomGame = 1 + Math.floor(Math.random() * 25);
+  if(gamesError){
+    return <Offcanvas placement="end" show={show} onHide={handleClose}>
+      <Offcanvas.Header closeButton style={{backgroundColor:'rgb(241,245,249)'}}>
+      <Offcanvas.Title >{selectedRow?.full_name}</Offcanvas.Title>
+    </Offcanvas.Header>
+    <Offcanvas.Body>
+      <p>Error in showing the games data </p>
+    </Offcanvas.Body>
+    </Offcanvas>
+  }
   return (
     <Offcanvas placement="end" show={show} onHide={handleClose}>
     <Offcanvas.Header closeButton style={{backgroundColor:'rgb(241,245,249)'}}>
